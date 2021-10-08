@@ -4,6 +4,7 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js'
 import { BasisTextureLoader } from 'three/examples/jsm/loaders/BasisTextureLoader.js'
+import Experience from '../Experience'
 
 export default class Resources extends EventEmitter
 {
@@ -14,7 +15,7 @@ export default class Resources extends EventEmitter
     {
         super()
 
-        this.experience = window.experience
+        this.experience = new Experience()
         this.renderer = this.experience.renderer.instance
 
         this.setLoaders()
