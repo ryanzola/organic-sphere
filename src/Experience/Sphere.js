@@ -11,7 +11,8 @@ export default class Sphere {
     this.time = this.experience.time
     this.debug = this.experience.debug
 
-    this.timeFrequency = 0.0003
+    // this.timeFrequency = 0.0003
+    this.timeFrequency = 0.0006
     
     if(this.debug) {
       this.debugFolder = this.debug.addFolder({
@@ -31,6 +32,7 @@ export default class Sphere {
 
     this.setGeometry()
     this.setLights()
+    this.setOffset()
     this.setMaterial()
     this.setMesh()
   }
@@ -45,6 +47,7 @@ export default class Sphere {
 
     this.lights.a.color = {}
     this.lights.a.color.value = '#ff3e00'
+    // this.lights.a.color.value = '#00acff'
     this.lights.a.color.instance = new THREE.Color(this.lights.a.color.value)
 
     this.lights.a.spherical = new THREE.Spherical(1, 0.615, 2.049)
@@ -107,6 +110,13 @@ export default class Sphere {
     }
   }
 
+  setOffset() {
+      this.offset = {}
+      this.offset.spherical = new THREE.Spherical(1, Math.random() * Math.PI, Math.random() * Math.PI * 2)
+      this.offset.direction = new THREE.Vector3()
+      this.offset.direction.setFromSpherical(this.offset.spherical)
+  }
+
   setGeometry() {
     this.geometry = new THREE.SphereGeometry(1, 512, 512)
     this.geometry.computeTangents()
@@ -129,12 +139,16 @@ export default class Sphere {
 
         uSubdivision: { value: new THREE.Vector2(this.geometry.parameters.widthSegments, this.geometry.parameters.heightSegments) },
 
+        uOffsetDirection: { value: this.offset.direction },
+        uOffsetSpeed: { value: 2 },
+
         uOffset: { value: new THREE.Vector3() },
 
         uDistortionFrequency: { value: 1.5 },
         uDistortionStrength: { value: 0.65 },
         uDisplacementFrequency: { value: 2.120 },
         uDisplacementStrength: { value: 0.152 },
+        // uDisplacementStrength: { value: 0.083 },
 
         uFresnelOffset: { value: -1.609 },
         uFresnelMultiplier: { value: 3.587 },
@@ -210,6 +224,8 @@ export default class Sphere {
   }
 
   update() {
+    this.offset.spherical.phi = (Math.sin(this.time.elapsed * 0.001) * 0.5 + 0.5) * Math.PI
+    this.offset.direction.setFromSpherical(this.offset.spherical)
     if(this.material)
       this.material.uniforms.uTime.value += this.time.delta * this.timeFrequency
   }
